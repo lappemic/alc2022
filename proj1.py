@@ -92,14 +92,17 @@ for i in range(1, numUnits+1):
 print('len X_vars:', len(X_vars))
 print('len X_vars / 3:', len(X_vars)/3)
 
-# define variable to check if unit i is harvested already
-def valid_harvesting_period(X_vars):
-    '''
-    Check if unit i is harvested in period k
-    '''
-    valid_harvesting = []
-    for i in range(int(len(X_vars)/numPeriods)):
-        print(i)
-        
-    
-valid_harvesting_period(X_vars)
+# add constraint 1: each unit is harvested at most once in the T time periods
+g = Glucose4()
+## create variables
+v = [[int(numPeriods*i+1 + j) for j in range(numPeriods)] for i in range(numUnits)]
+## add clauses
+for x in range(len(v)):
+    # g.add_clause([1, 2, 3, .., j])
+    # g.add_clause([1+j, 2+j, 3+j, ..., j+j])
+    g.add_clause(v[x])
+
+# solve constraints -> just temporary here
+print('\nSAT?', g.solve())
+model = g.get_model()
+print('Model:', model)
