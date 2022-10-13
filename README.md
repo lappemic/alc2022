@@ -1,2 +1,2 @@
-# alc2022
-harvesting scheduling problem
+# harvest-scheduling
+Develop a software tool for solving the Harvest Scheduling problem.
