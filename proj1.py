@@ -6,19 +6,13 @@ from pysat.card import CardEnc, EncType
 
 from pprint import pprint
 
-
-
 # parsing function 2
-file = 'input.txt'
+lines = sys.stdin.readlines()
 
-def parse2(file):
-    # initialize counter for ongoing line reading
-    with open(file, 'r') as f:
-        lines = f.readlines()
-        # print(lines)
-        f.close()
-    
+def parse(lines):
+    # initialize counter for ongoing line reading    
     lineCounter = 0
+    
     # Line 1 - Number of units
     numUnits = int(lines[lineCounter].rstrip())
     lineCounter += 1
@@ -61,7 +55,7 @@ def parse2(file):
     return numUnits, numPeriods, areaSizes, adjacents, periods, minArea
     
 # Parse the input file
-numUnits, numPeriods, areaSizes, adjacents, periods, minArea = parse2(file)
+numUnits, numPeriods, areaSizes, adjacents, periods, minArea = parse(lines)
 
 # Check the input parameters
 print('numUnits:', numUnits)
@@ -89,8 +83,8 @@ for i in range(1, numUnits+1):
         X_vars.append('X_' + str(i) + '_' + str(k))
         
 # pprint(X_vars)
-print('len X_vars:', len(X_vars))
-print('len X_vars / 3:', len(X_vars)/3)
+# print('len X_vars:', len(X_vars))
+# print('len X_vars / 3:', len(X_vars)/3)
 
 # add constraint 1: each unit is harvested at most once in the T time periods
 g = Glucose4()
