@@ -6,7 +6,7 @@ from pysat.card import CardEnc, EncType
 
 from pprint import pprint
 
-# parsing function 2
+# parsing the input
 lines = sys.stdin.readlines()
 
 def parse(lines):
@@ -86,17 +86,29 @@ for i in range(1, numUnits+1):
 # print('len X_vars:', len(X_vars))
 # print('len X_vars / 3:', len(X_vars)/3)
 
-# add constraint 1: each unit is harvested at most once in the T time periods
+# add constraint 1
+## each unit is harvested at most once in the T time periods
 g = Glucose4()
-## create variables
-v = [[int(numPeriods*i+1 + j) for j in range(numPeriods)] for i in range(numUnits)]
-## add clauses
-for x in range(len(v)):
-    # g.add_clause([1, 2, 3, .., j])
-    # g.add_clause([1+j, 2+j, 3+j, ..., j+j])
-    g.add_clause(v[x])
+# define the clauses
+harvested = [[int(numPeriods*i+1 + j) for j in range(numPeriods)] for i in range(numUnits)]
+# do the pairwise encoding
+for i in range(numUnits):
+    enc = CardEnc.atmost(lits = harvested[i], bound = 1, top_id = harvested[i][-1], encoding = EncType.pairwise)
+    for clause in enc.clauses:
+        print('adding clause:', clause)
+        g.add_clause(clause)
+    
+
+print("\nSAT?", g.solve())
+print("Model:", g.get_model())
 
 # solve constraints -> just temporary here
 print('\nSAT?', g.solve())
 model = g.get_model()
 print('Model:', model)
+
+# trying maxsat solving here (not properly reviewed)
+from pysat.examples.rc2 import RC2
+from pysat.formula import WCNF
+
+solver = RC2(WCNF())
