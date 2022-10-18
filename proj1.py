@@ -1,10 +1,13 @@
 import sys
-import numpy as np
 
 from pysat.solvers import Glucose4
 from pysat.card import CardEnc, EncType
+from pysat.examples.rc2 import RC2
+from pysat.formula import WCNF
 
 from pprint import pprint
+
+solver = RC2(WCNF())
 
 # parsing the input
 lines = sys.stdin.readlines()
@@ -87,8 +90,7 @@ for i in range(1, numUnits+1):
 # print('len X_vars / 3:', len(X_vars)/3)
 
 # add constraint 1
-## each unit is harvested at most once in the T time periods
-g = Glucose4()
+# each unit is harvested at most once in the T time periods
 # define the clauses
 harvested = [[int(numPeriods*i+1 + j) for j in range(numPeriods)] for i in range(numUnits)]
 # do the pairwise encoding
@@ -96,19 +98,14 @@ for i in range(numUnits):
     enc = CardEnc.atmost(lits = harvested[i], bound = 1, top_id = harvested[i][-1], encoding = EncType.pairwise)
     for clause in enc.clauses:
         print('adding clause:', clause)
-        g.add_clause(clause)
-    
+        solver.add_clause(clause)
 
-print("\nSAT?", g.solve())
-print("Model:", g.get_model())
 
-# solve constraints -> just temporary here
-print('\nSAT?', g.solve())
-model = g.get_model()
-print('Model:', model)
-
-# trying maxsat solving here (not properly reviewed)
-from pysat.examples.rc2 import RC2
-from pysat.formula import WCNF
-
-solver = RC2(WCNF())
+# Constraint 2: two adjacent units cannot be harvested in the same time period
+# Xit -> not(Xkt), i U, t T, k adjacents[i]
+for t in range(1, numPeriods+1):
+    for unit in range(1, numUnits+1):
+        for adj in range(1, len(adjacents[unit-1])):
+            clause = [-(unit*t), -(adjacents[unit-1][adj]*t)]
+            print('adding clause:', clause)
+            solver.add_clause(clause)
