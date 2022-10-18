@@ -61,12 +61,12 @@ def parse(lines):
 numUnits, numPeriods, areaSizes, adjacents, profits, minArea = parse(lines)
 
 # Check the input parameters
-print('numUnits:', numUnits)
-print('numPeriods:', numPeriods)
-print('areaSizes:', areaSizes)
-print('adjacents:', adjacents)
-print('profits:', profits)
-print('minArea:', minArea)
+# print('numUnits:', numUnits)
+# print('numPeriods:', numPeriods)
+# print('areaSizes:', areaSizes)
+# print('adjacents:', adjacents)
+# print('profits:', profits)
+# print('minArea:', minArea)
 
 # variable is unit i harvested in period g
 # unit i with adjacent unit j
@@ -97,7 +97,7 @@ harvested = [[int(numPeriods*i+1 + j) for j in range(numPeriods)] for i in range
 for i in range(numUnits):
     enc = CardEnc.atmost(lits = harvested[i], bound = 1, top_id = harvested[i][-1], encoding = EncType.pairwise)
     for clause in enc.clauses:
-        print('adding clause:', clause)
+        # print('adding clause:', clause)
         solver.add_clause(clause)
 
 
@@ -107,7 +107,7 @@ for t in range(1, numPeriods+1):
     for unit in range(1, numUnits+1):
         for adj in range(1, len(adjacents[unit-1])):
             clause = [-(unit*t), -(adjacents[unit-1][adj]*t)]
-            print('adding clause:', clause)
+            # print('adding clause:', clause)
             solver.add_clause(clause)
 
 
@@ -131,8 +131,8 @@ for xij in literals:
 # Solve the problem statement
 model = solver.compute()
 cost = solver.cost
-print("Model:", model)
-print('Cost:', cost)
+# print("Model:", model)
+# print('Cost:', cost)
 
 # Translate the model back to vars
 ## Define function for translation
@@ -146,4 +146,6 @@ def explain_model(model, X_vars):
                 print(attrs[int(v)-1], '\n')
 
 ## translate back with defined function
-explain_model(model, X_vars)
+# explain_model(model, X_vars)
+
+
