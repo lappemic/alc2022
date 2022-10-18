@@ -46,26 +46,26 @@ def parse(lines):
     startPeriods = lineCounter
     endPeriods = lineCounter + numPeriods
     
-    periods = []
+    profits = []
     for i in range(startPeriods, endPeriods):
         line = lines[i].rstrip().split()
-        periods.append([int(line[i]) for i in range(len(line))])
+        profits.append([int(line[i]) for i in range(len(line))])
     lineCounter = endPeriods
     
     # Last line - Minimum area size for the natural reserve
     minArea = lines[-1]
     
-    return numUnits, numPeriods, areaSizes, adjacents, periods, minArea
+    return numUnits, numPeriods, areaSizes, adjacents, profits, minArea
     
 # Parse the input file
-numUnits, numPeriods, areaSizes, adjacents, periods, minArea = parse(lines)
+numUnits, numPeriods, areaSizes, adjacents, profits, minArea = parse(lines)
 
 # Check the input parameters
 print('numUnits:', numUnits)
 print('numPeriods:', numPeriods)
 print('areaSizes:', areaSizes)
 print('adjacents:', adjacents)
-print('periods:', periods)
+print('profits:', profits)
 print('minArea:', minArea)
 
 # variable is unit i harvested in period g
