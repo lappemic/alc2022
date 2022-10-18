@@ -109,3 +109,41 @@ for t in range(1, numPeriods+1):
             clause = [-(unit*t), -(adjacents[unit-1][adj]*t)]
             print('adding clause:', clause)
             solver.add_clause(clause)
+
+
+# Profit optimization -> adding the soft clauses
+## define the literals
+literals = [int(x+1) for x in range(numPeriods*numUnits)]
+
+## add soft clauses
+# adding the soft clauses
+literals = [int(x+1) for x in range(numPeriods*numUnits)]
+for xij in literals:
+    column = ((xij-1)//numPeriods)
+    row = ((xij-1)%numPeriods)
+    # print('xij:', xij)
+    # print('column:', column)
+    # print('row:', row)
+    # print('adding clause:', [xij], profits[row][column])
+    solver.add_clause([xij], weight = profits[row][column])
+    # print('----')
+    
+# Solve the problem statement
+model = solver.compute()
+cost = solver.cost
+print("Model:", model)
+print('Cost:', cost)
+
+# Translate the model back to vars
+## Define function for translation
+def explain_model(model, X_vars):
+    attrs = X_vars
+    if model != None:
+        print("\nTrue literals are:")
+        for v in model:
+            if int(v) > 0:
+                print('id:', (v)-1)
+                print(attrs[int(v)-1], '\n')
+
+## translate back with defined function
+explain_model(model, X_vars)
