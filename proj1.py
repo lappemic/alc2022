@@ -130,9 +130,9 @@ for xij in literals:
     
 # Solve the problem statement
 model = solver.compute()
-cost = solver.cost
+profit = solver.cost
 # print("Model:", model)
-# print('Cost:', cost)
+# print('profit:', profit)
 
 # Translate the model back to vars
 ## Define function for translation
@@ -145,7 +145,10 @@ def explain_model(model, X_vars):
                 print('id:', (v)-1)
                 print(attrs[int(v)-1], '\n')
 
-## translate back with defined function
-# explain_model(model, X_vars)
 
+# Define the ouput
+## Profit
+print(profit)
 
+## translate model -> just for some insight
+#explain_model(model, X_vars)
