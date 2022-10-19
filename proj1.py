@@ -53,7 +53,7 @@ def parse(lines):
     lineCounter = endPeriods
     
     # Last line - Minimum area size for the natural reserve
-    minArea = lines[-1]
+    minArea = int(lines[-1])
     
     return numUnits, numPeriods, areaSizes, adjacents, profits, minArea
     
@@ -150,19 +150,48 @@ def explain_model(model, X_vars):
 ## take just the positive numbers
 modelPos = [x for x in model if x > 0]
 
-## calculate the maximal profit with the given model
+## calculate the maximal profit as well as the units harvested in each period
 maxProfit = 0
+periods = []
+units = []
 for xij in modelPos:
     # print(xij)
+    # get maximal profit
     column = ((xij-1)//numPeriods)
     row = ((xij-1)%numPeriods)
     # print(profits[row][column])
     maxProfit += profits[row][column]
     # print(maxProfit)
+    
+    # get unit i harvested in period j
+    period = ((xij-1)%numPeriods)
+    unit = ((xij-1)//numPeriods)
+    # print('xij:', xij)
+    # print(' - unit:', unit)
+    # print(' - period:', period)
+    # print('literal:', harvested[unit][period])
+    periods.append(period+1)
+    units.append(unit+1)
+    # print('------')
 
 # Define the ouput
 ## Profit
-print('Profit:', maxProfit)
+print(maxProfit)
 
-## translate model -> just for some insight
-#explain_model(model, X_vars)
+# create prints of the k lines with jth line containing nr and identifiers of harvested units in kth period
+for per in set(periods):
+    # print('period:', per)
+    # print('index:', [i for i, x in enumerate(periods) if x == per])
+    idxj = [i for i, x in enumerate(periods) if x == per]
+    # print('units:', [units[x] for x in idxj])
+    harvUnitsPeriod = [units[x] for x in idxj]
+    
+    # print the resulting line
+    # print('Resulting line:')
+    print(len(harvUnitsPeriod), *harvUnitsPeriod)
+    # print('----')
+
+# print(minArea)
+# if minArea of natural reserve is 0 print it
+if minArea == 0:
+    print(minArea)
