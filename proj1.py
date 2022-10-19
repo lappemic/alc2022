@@ -6,6 +6,10 @@ from pysat.formula import WCNF
 
 solver = RC2(WCNF())
 
+# TO DO
+# set natural reserve flag
+# naturalReserve = 0
+
 # parsing the input
 lines = sys.stdin.readlines()
 
@@ -52,6 +56,13 @@ def parse(lines):
     # Last line - Minimum area size for the natural reserve
     minArea = int(lines[-1])
     
+    # TO DO
+    # if there is a natural reserve the minArea is > 0
+    # if minArea > 0:
+    #     profits.append([0] * numUnits) # since we can not harvest a natural reserve the profit is zero
+    #     numPeriods += 1 # represents fictive timeperiod, in order to deny harvesting that unit
+    #     naturalReserve = 1 # that is a natural reserve
+    
     return numUnits, numPeriods, areaSizes, adjacents, profits, minArea
     
 # Parse the input file
@@ -81,6 +92,30 @@ for Lij in literals:
         clause = [-(Lij), -((r-1)*numPeriods + c)]
         solver.add_clause(clause)
 
+# TO DO
+# if naturalReserve:
+#     # Constraint 3.1 -> Definition of the natural Reserve
+#     # It can not be harvested if it belongs to the natural reserve
+#     for un in range(0, numUnits):
+#         solver.add_clause([-(un * numPeriods + numPeriods)])
+        
+#     # Constraint 3.2
+#     # The natural reserve must be contiguous area
+    
+#     # Constraint 3.3
+#     # The minimum Area of the natural reserve must be greater or equal than A_min
+#     nReserves = []
+#     for i in range(numPeriods-1, len(literals), numPeriods):
+#         nReserves += literals[i]
+    
+#     cnf = PBEnc.atleast(lits = nReserves, weights = areaSizes, bound = minArea)
+#     for clause in enc.clauses:
+#         solver.add_clause(clause)
+    # 
+    # enc = CardEnc.geq(lits = nReserves, weights = areaSizes, bound = minArea, encoding = 'adder')
+    # for clause in enc.clauses:
+    #     solver.add_clause(clause)     
+
 
 # Profit optimization -> adding the soft clauses
 ## add soft clauses
@@ -96,6 +131,7 @@ cost = solver.cost
 # Calculate the effective profit
 ## take just the positive numbers
 modelPos = [x for x in model if x > 0]
+# print(model)
 
 ## calculate the maximal profit as well as the units harvested in each period
 maxProfit = 0
@@ -119,7 +155,10 @@ for xij in modelPos:
 print(maxProfit)
 
 ## create prints of the k lines with jth line containing nr and identifiers of harvested units in kth period
-for per in set(periods):
+for per in range(1, numPeriods+1):
+    if per not in periods:
+        print(int(0))
+        continue
     idxj = [i for i, x in enumerate(periods) if x == per]
     harvUnitsPeriod = [units[x] for x in idxj]
     

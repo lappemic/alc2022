@@ -1,0 +1,6 @@
+
+Usage: ./hsp-checher instanceFile outputFile
+
+instanceFile refers to the hsp problem instance file
+outputFile refers to the file containing your tool's output for the instanceFile
+
