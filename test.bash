@@ -7,7 +7,7 @@ failed=0
 for f in public-instances/*.hsp
 do
     echo "in file ${f}"
-    time=1 # edit time here
+    time=5 # edit time here
     gtimeout ${time}s python3 proj1.py < ${f} > output.out
     if [ $? == 124 ]; then # 124 is the int for TERM signal
         echo "${red}Time limit exceeded: ${time} second :(${reset}"

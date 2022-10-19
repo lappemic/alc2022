@@ -103,21 +103,22 @@ for i in range(numUnits):
 
 # Constraint 2: two adjacent units cannot be harvested in the same time period
 # Xit -> not(Xkt), i U, t T, k adjacents[i]
-for t in range(1, numPeriods+1):
-    for unit in range(1, numUnits+1):
-        for adj in range(1, len(adjacents[unit-1])):
-            clause = [-(unit*t), -(adjacents[unit-1][adj]*t)]
-            # print('adding clause:', clause)
-            solver.add_clause(clause)
+literals = [int(x+1) for x in range(numPeriods*numUnits)]
+for Lij in literals:
+    c = (((Lij)-1)%numPeriods)+1
+    u = (Lij-1)//numPeriods
+
+    #It starts at 1, because the 0 is the number of adjs
+    for adj in range(1, adjacents[u][0] + 1):
+        r = adjacents[u][adj] 
+        #print(column, row)
+        clause = [-(Lij), -((r-1)*numPeriods + c)]
+        # print('adding clause:', clause)
+        solver.add_clause(clause)
 
 
 # Profit optimization -> adding the soft clauses
-## define the literals
-literals = [int(x+1) for x in range(numPeriods*numUnits)]
-
 ## add soft clauses
-# adding the soft clauses
-literals = [int(x+1) for x in range(numPeriods*numUnits)]
 for xij in literals:
     column = ((xij-1)//numPeriods)
     row = ((xij-1)%numPeriods)
@@ -130,7 +131,7 @@ for xij in literals:
     
 # Solve the problem statement
 model = solver.compute()
-profit = solver.cost
+cost = solver.cost
 # print("Model:", model)
 # print('profit:', profit)
 
@@ -145,10 +146,23 @@ def explain_model(model, X_vars):
                 print('id:', (v)-1)
                 print(attrs[int(v)-1], '\n')
 
+# Calculate the effective profit
+## take just the positive numbers
+modelPos = [x for x in model if x > 0]
+
+## calculate the maximal profit with the given model
+maxProfit = 0
+for xij in modelPos:
+    # print(xij)
+    column = ((xij-1)//numPeriods)
+    row = ((xij-1)%numPeriods)
+    # print(profits[row][column])
+    maxProfit += profits[row][column]
+    # print(maxProfit)
 
 # Define the ouput
 ## Profit
-print(profit)
+print('Profit:', maxProfit)
 
 ## translate model -> just for some insight
 #explain_model(model, X_vars)
